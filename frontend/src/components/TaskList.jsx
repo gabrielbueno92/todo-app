@@ -25,37 +25,43 @@ function TaskList({ tasks, updateTask, deleteTask, toggleCompletion }) {
   return (
     <div>
       <h2>Task List</h2>
-      {tasks.map((task) => (
-        <div
-          key={task.id}
-          style={{ textDecoration: task.completed ? 'line-through' : 'none' }}
-        >
-          {editingTaskId === task.id ? (
-            <>
-              <input
-                type="text"
-                value={updatedTitle}
-                onChange={(e) => setUpdatedTitle(e.target.value)}
-              />
-              <textarea
-                value={updatedDescription}
-                onChange={(e) => setUpdatedDescription(e.target.value)}
-              />
-              <button onClick={() => handleUpdate(task.id)}>Save</button>
-            </>
-          ) : (
-            <>
-              <h3>{task.title}</h3>
-              <p>{task.description}</p>
-              <button onClick={() => handleEdit(task)}>Edit</button>
-              <button onClick={() => deleteTask(task.id)}>Delete</button>
-              <button onClick={() => toggleCompletion(task.id)}>
-                {task.completed ? 'Mark Incomplete' : 'Mark Completed'}
-              </button>
-            </>
-          )}
-        </div>
-      ))}
+
+      {tasks.length === 0 ? (
+        <p>You don't have tasks at the moment</p>
+      ) : (
+        tasks.map((task) => (
+          <div
+            key={task.id}
+            className="task"
+            style={{ textDecoration: task.completed ? 'line-through' : 'none' }}
+          >
+            {editingTaskId === task.id ? (
+              <>
+                <input
+                  type="text"
+                  value={updatedTitle}
+                  onChange={(e) => setUpdatedTitle(e.target.value)}
+                />
+                <textarea
+                  value={updatedDescription}
+                  onChange={(e) => setUpdatedDescription(e.target.value)}
+                />
+                <button onClick={() => handleUpdate(task.id)}>Save</button>
+              </>
+            ) : (
+              <>
+                <h3>{task.title}</h3>
+                <p>{task.description}</p>
+                <button onClick={() => handleEdit(task)}>Edit</button>
+                <button onClick={() => deleteTask(task.id)}>Delete</button>
+                <button onClick={() => toggleCompletion(task.id)}>
+                  {task.completed ? 'Mark Incomplete' : 'Mark Completed'}
+                </button>
+              </>
+            )}
+          </div>
+        ))
+      )}
     </div>
   )
 }

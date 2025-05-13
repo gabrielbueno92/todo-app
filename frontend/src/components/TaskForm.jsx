@@ -23,7 +23,7 @@ const TaskForm = ({ addTask }) => {
     setDescription('')
   }
   return (
-    <form onSubmit={handleSubmit}>
+    <form className="task-form" onSubmit={handleSubmit}>
       <div>
         <label>Title: </label>
         <input
