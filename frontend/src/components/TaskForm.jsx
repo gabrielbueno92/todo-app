@@ -18,7 +18,8 @@ const TaskForm = ({ addTask }) => {
       alert('Title and description cannot be empty!')
       return
     }
-    addTask({ title, description })
+    const newTask = { title, description }
+    addTask(newTask)
     setTitle('')
     setDescription('')
   }

@@ -1,4 +1,4 @@
-import React, { use, useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import TaskForm from './components/TaskForm'
 import TaskList from './components/TaskList'
 import './App.css'
@@ -7,10 +7,30 @@ function App() {
   const [tasks, setTasks] = useState([])
   const [nextId, setNextId] = useState(1)
 
-  const addTask = ({ title, description }) => {
-    const newTask = { id: nextId, title, description, completed: false }
-    setTasks([...tasks, newTask])
-    setNextId(nextId + 1)
+  useEffect(() => {
+    fetch('http://localhost:8080/tasks')
+      .then((res) => res.json())
+      .then((data) => setTasks(data))
+      .catch((error) => console.error('Error fetching tasks:', error))
+  }, [])
+
+  const createTask = async ({ title, description }) => {
+    try {
+      const response = await fetch('http://localhost:8080/tasks', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title, description }),
+      })
+
+      if (response.ok) {
+        const newTask = await response.json()
+        setTasks((prevTasks) => [...prevTasks, newTask])
+      } else {
+        console.error('Failed to create task')
+      }
+    } catch (error) {
+      console.error('Error creating task:', error)
+    }
   }
 
   const updateTask = (taskId, updatedTitle, updatedDescription) => {
@@ -38,7 +58,7 @@ function App() {
   return (
     <div className="app-container">
       <h1>Task Manager</h1>
-      <TaskForm addTask={addTask} />
+      <TaskForm addTask={createTask} />
       <TaskList
         tasks={tasks}
         updateTask={updateTask}
