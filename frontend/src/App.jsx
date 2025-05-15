@@ -33,14 +33,29 @@ function App() {
     }
   }
 
-  const updateTask = (taskId, updatedTitle, updatedDescription) => {
-    setTasks(
-      tasks.map((task) =>
-        task.id === taskId
-          ? { ...task, title: updatedTitle, description: updatedDescription }
-          : task
-      )
-    )
+  const updateTask = async (taskId, updatedTitle, updatedDescription) => {
+    try {
+      const response = await fetch(`http://localhost:8080/tasks/${taskId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title: updatedTitle,
+          description: updatedDescription,
+        }),
+      })
+
+      if (response.ok) {
+        const updatedTask = await response.json()
+
+        setTasks((prevTasks) =>
+          prevTasks.map((task) => (task.id === taskId ? updatedTask : task))
+        )
+      } else {
+        console.error('Error updating task')
+      }
+    } catch (error) {
+      console.error('Network error updating task: ', error)
+    }
   }
 
   const deleteTask = (taskId) => {
