@@ -58,16 +58,49 @@ function App() {
     }
   }
 
-  const deleteTask = (taskId) => {
-    setTasks(tasks.filter((task) => task.id !== taskId))
+  const deleteTask = async (taskId) => {
+    try {
+      const response = await fetch(`http://localhost:8080/tasks/${taskId}`, {
+        method: 'DELETE',
+      })
+
+      if (response.ok) {
+        setTasks((prevTasks) => prevTasks.filter((task) => task.id !== taskId))
+      } else {
+        console.error('Error deleting task')
+      }
+    } catch (error) {
+      console.error('Network error deleting task:', error)
+    }
   }
 
-  const toggleCompletion = (taskId) => {
-    setTasks(
-      tasks.map((task) =>
-        task.id === taskId ? { ...task, completed: !task.completed } : task
-      )
-    )
+  const toggleCompletion = async (taskId) => {
+    const taskToUpdate = tasks.find((task) => task.id === taskId)
+    if (!taskToUpdate) return
+
+    const updatedTask = {
+      ...taskToUpdate,
+      completed: !taskToUpdate.completed,
+    }
+    try {
+      const response = await fetch(`http://localhost:8080/tasks/${taskId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updatedTask),
+      })
+      if (response.ok) {
+        const updatedFromServer = await response.json()
+        setTasks((prevTasks) =>
+          prevTasks.map((task) =>
+            task.id === taskId ? updatedFromServer : task
+          )
+        )
+      } else {
+        console.error('Error updating task completion status')
+      }
+    } catch (error) {
+      console.error('Network error toggling completion: ', error)
+    }
   }
 
   return (
