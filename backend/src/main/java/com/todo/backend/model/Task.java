@@ -9,6 +9,15 @@ import jakarta.validation.constraints.NotBlank;
 @Entity
 public class Task {
 
+    public Task () {
+
+    }
+    public Task(String title, String description) {
+        this.title = title;
+        this.description = description;
+        this.completed = false;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
