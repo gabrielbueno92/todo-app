@@ -4,6 +4,7 @@ function TaskList({ tasks, updateTask, deleteTask, toggleCompletion }) {
   const [editingTaskId, setEditingTaskId] = useState(null)
   const [updatedTitle, setUpdatedTitle] = useState('')
   const [updatedDescription, setUpdatedDescription] = useState('')
+  const [errorMessage, setErrorMessage] = useState('')
 
   const handleEdit = (task) => {
     setEditingTaskId(task.id)
@@ -13,13 +14,14 @@ function TaskList({ tasks, updateTask, deleteTask, toggleCompletion }) {
 
   const handleUpdate = (taskId) => {
     if (!updatedTitle || !updatedDescription) {
-      alert('Title and description cannot be empty!')
+      setErrorMessage('Title and description cannot be empty!')
       return
     }
     updateTask(taskId, updatedTitle, updatedDescription)
     setEditingTaskId(null)
     setUpdatedTitle('')
     setUpdatedDescription('')
+    setErrorMessage('')
   }
 
   return (
@@ -46,6 +48,11 @@ function TaskList({ tasks, updateTask, deleteTask, toggleCompletion }) {
                   value={updatedDescription}
                   onChange={(e) => setUpdatedDescription(e.target.value)}
                 />
+                {errorMessage && (
+                  <p style={{ color: 'red', fontWeight: 'bold' }}>
+                    {errorMessage}
+                  </p>
+                )}
                 <button onClick={() => handleUpdate(task.id)}>Save</button>
               </>
             ) : (
